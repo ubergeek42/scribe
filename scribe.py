@@ -1,10 +1,16 @@
+#!/usr/bin/env python
 import os
 import sys
 import xmlrpclib
+import time
+
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 # Add current directory to path so we can import settings.
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 import settings
+
 
 __version__ = '0.1'
 
@@ -60,5 +66,24 @@ def upload(parentPageName, pageName, imagepath):
     # actually make the call to upload the iamge
     server.confluence2.addAttachment(token, imagePage['id'], attachment, ba)
 
-# Sample call:
-# upload("Sprint 1", "Design Day 1", "/path/to/some/jpeg/2013-02-05_09-59-54_241.jpg")
+class PhotoEventHandler(FileSystemEventHandler):
+    """
+    Searches for photos in a certain folder structure and triggers processing
+    on them.
+    """
+    def dispatch(self, event):
+        print event
+
+
+# Sample call: upload("Sprint 1", "Design Day 1", "/path/to/some/jpeg/2013-02-05_09-59-54_241.jpg")
+if __name__ == '__main__':
+    handler = PhotoEventHandler()
+    observer = Observer()
+    observer.schedule(handler, path=settings.PHOTO_DIRECTORY, recursive=True)
+    observer.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()

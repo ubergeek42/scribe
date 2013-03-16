@@ -1,2 +1,7 @@
 # Absolute path to photo directory to watch.
 PHOTO_DIRECTORY = ''
+
+SERVER=""
+USERNAME=""
+PASSWORD=""
+SPACE=""

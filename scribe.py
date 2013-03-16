@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import datetime
 import os
+import shutil
 import sys
 import xmlrpclib
 import time
@@ -34,7 +36,7 @@ def upload(parentPageName, pageName, imagepath):
 
     # Try to get the page, but if it fails, that's ok, we'll create a new one
     try:
-        imagePage = server.confluence2.getPage(token,settings.SPACE, pageName)
+        imagePage = server.confluence2.getPage(token, settings.SPACE, pageName)
     except:
         imagePage = {}
 
@@ -66,13 +68,31 @@ def upload(parentPageName, pageName, imagepath):
     # actually make the call to upload the iamge
     server.confluence2.addAttachment(token, imagePage['id'], attachment, ba)
 
+
 class PhotoEventHandler(FileSystemEventHandler):
     """
     Searches for photos in a certain folder structure and triggers processing
     on them.
     """
     def dispatch(self, event):
-        print event
+        filename = os.path.basename(event.src_path)
+        directory_name = os.path.basename(os.path.dirname(event.src_path))
+        date = datetime.datetime.strptime(directory_name, '%Y-%m-%d').date()
+
+        # Determine the sprint and page names based on the date.
+        difference = settings.FIRST_SPRINT_DATE - date
+        sprint_name = 'Sprint {0}'.format((difference.days / 14) + 1)
+        page_name = 'Design Day {0} ({1})'.format(
+            difference.days % 14,
+            date.strftime('%A %Y-%m-%d')
+        )
+
+        upload(sprint_name, page_name, event.src_path)
+
+        # Copy file to archive and delete the existing file.
+        destination = os.path.join(settings.ARCHIVE_DIRECTORY, directory_name,
+                                   filename)
+        shutil.move(event.src_path, destination)
 
 
 # Sample call: upload("Sprint 1", "Design Day 1", "/path/to/some/jpeg/2013-02-05_09-59-54_241.jpg")

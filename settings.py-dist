@@ -1,7 +1,18 @@
+from datetime import date
+
+
 # Absolute path to photo directory to watch.
 PHOTO_DIRECTORY = ''
 
-SERVER=""
-USERNAME=""
-PASSWORD=""
-SPACE=""
+# Absolute path to photo archive. Photos are stored here once they've been sent
+# to Confluence.
+ARCHIVE_DIRECTORY = ''
+
+# Date that the first sprint started.
+FIRST_SPRINT_DATE = date(2013, 2, 27)
+
+# Confluence credentials
+SERVER = ''
+USERNAME = ''
+PASSWORD = ''
+SPACE = ''

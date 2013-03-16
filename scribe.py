@@ -112,7 +112,7 @@ class PhotoEventHandler(FileSystemEventHandler):
         date = datetime.datetime.strptime(directory_name, '%Y-%m-%d').date()
 
         # Determine the sprint and page names based on the date.
-        difference = settings.FIRST_SPRINT_DATE - date
+        difference = date - settings.FIRST_SPRINT_DATE
         sprint_name = 'Sprint {0}'.format(abs(difference.days / 14) + 1)
         page_name = 'Design Day {0} ({1})'.format(
             (difference.days % 14) + 1,

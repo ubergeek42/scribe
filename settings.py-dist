@@ -15,5 +15,7 @@ FIRST_SPRINT_DATE = date(2013, 2, 27)
 SERVER = ''
 USERNAME = ''
 PASSWORD = ''
+# Confluence space id(usually 3-4 capital letters; found in the url)
 SPACE = ''
+# This page is the parent of all of the sprint pages
 PARENT_PAGE = ''

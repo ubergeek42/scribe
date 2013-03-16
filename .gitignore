@@ -9,3 +9,5 @@ tmp/*
 settings.py
 photos/*
 archive/*
+dist/*
+build/*

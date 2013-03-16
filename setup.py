@@ -1,7 +1,7 @@
 import codecs
 import os
 import re
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def read(*parts):
@@ -23,11 +23,11 @@ setup(
                  'page'),
     long_description=read('README.md'),
     version=find_version('scribe.py'),
-    packages=find_packages(),
+    scripts=['scribe.py'],
     author='TrepHub',
     author_email='',
     url='https://github.com/ubergeek42/scribe',
     license='MIT License',
-    install_requires=['watchdog==0.6.0'],
+    install_requires=['argh=0.23.1', 'watchdog==0.6.0'],
     include_package_data=True,
 )

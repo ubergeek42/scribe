@@ -6,6 +6,7 @@ import sys
 import xmlrpclib
 import time
 
+import argh
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
@@ -20,7 +21,7 @@ __version__ = '0.1'
 def upload(parent_name, page_name, image_path):
     """
     Uploads an image to the confluence wiki page 'page_name' as an attachment,
-    and inserts a link + a thumbnail at the end of the wiki page content.  It
+    and inserts a link + a thumbnail at the end of the wiki page content. It
     also sets the parent page to parent_name.
     """
     filename = os.path.basename(image_path)
@@ -50,7 +51,6 @@ def upload(parent_name, page_name, image_path):
         </p>
         """
         sprint_page = server.confluence2.storePage(token, sprint_page)
-
 
     # Try to get the page, but if it fails, that's ok, we'll create a new one
     try:
@@ -132,10 +132,13 @@ class PhotoEventHandler(FileSystemEventHandler):
         shutil.move(event.src_path, os.path.join(dest_dir, filename))
 
 
-if __name__ == '__main__':
+def main():
+    """Start monitoring a directory for incoming photos."""
     handler = PhotoEventHandler()
     observer = Observer()
     observer.schedule(handler, path=settings.PHOTO_DIRECTORY, recursive=True)
+
+    print 'Monitoring `{0}`...'.format(settings.PHOTO_DIRECTORY)
     observer.start()
     try:
         while True:
@@ -143,3 +146,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+
+argh.dispatch_command(main)
